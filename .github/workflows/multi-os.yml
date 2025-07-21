@@ -31,7 +31,6 @@ jobs:
       run: python hello.py
     
     - name: OS specific commands
-      shell: bash
       run: |
         if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
           echo "Running on Ubuntu Linux"
@@ -39,7 +38,8 @@ jobs:
           lsb_release -a
         elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
           echo "Running on Windows"
-          systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+          systeminfo | findstr "OS Name"
+          systeminfo | findstr "OS Version"
         elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
           echo "Running on macOS"
           sw_vers
