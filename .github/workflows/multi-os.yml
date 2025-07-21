@@ -30,17 +30,22 @@ jobs:
     - name: Run Python script
       run: python hello.py
     
-    - name: OS specific commands
+    - name: Linux specific task
+      if: runner.os == 'Linux'
       run: |
-        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-          echo "Running on Ubuntu Linux"
-          uname -a
-          lsb_release -a
-        elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-          echo "Running on Windows"
-          systeminfo | findstr "OS Name"
-          systeminfo | findstr "OS Version"
-        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-          echo "Running on macOS"
-          sw_vers
-        fi
+        echo "Running on Ubuntu Linux"
+        uname -a
+        lsb_release -a
+    
+    - name: Windows specific task
+      if: runner.os == 'Windows'
+      run: |
+        echo "Running on Windows"
+        systeminfo | findstr "OS Name"
+        systeminfo | findstr "OS Version"
+    
+    - name: macOS specific task
+      if: runner.os == 'macOS'
+      run: |
+        echo "Running on macOS"
+        sw_vers
