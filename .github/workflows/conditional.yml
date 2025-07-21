@@ -1,0 +1,43 @@
+name: Conditional Execution
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  check-os:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Linux specific task
+      if: runner.os == 'Linux'
+      run: |
+        echo "This will run only on Linux"
+        sudo apt-get update
+        sudo apt-get install -y tree
+        tree --version
+    
+    - name: Windows specific task
+      if: runner.os == 'Windows'
+      run: |
+        echo "This will run only on Windows"
+        Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion
+    
+    - name: macOS specific task
+      if: runner.os == 'macOS'
+      run: |
+        echo "This will run only on macOS"
+        brew --version
+    
+    - name: Common task for all OS
+      run: |
+        echo "This will run on all OS"
+        echo "Runner OS: ${{ runner.os }}"
+        echo "Matrix OS: ${{ matrix.os }}"

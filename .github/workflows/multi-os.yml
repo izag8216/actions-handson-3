@@ -1,0 +1,46 @@
+name: Multi-OS Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-matrix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Display Python version
+      run: python --version
+    
+    - name: Run Python script
+      run: python hello.py
+    
+    - name: OS specific commands
+      shell: bash
+      run: |
+        if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          echo "Running on Ubuntu Linux"
+          uname -a
+          lsb_release -a
+        elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          echo "Running on Windows"
+          systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          echo "Running on macOS"
+          sw_vers
+        fi
